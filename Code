@@ -1,0 +1,103 @@
+# Load data from CSV files into Pandas DataFrames
+kfc_data = pd.read_csv('kfc_data.csv')  # Load KFC data
+mcd_data = pd.read_csv('mcd_data.csv')  # Load McDonald's data
+ccd_data = pd.read_csv('ccd_data.csv')  # Load Cafe Coffee Day data
+
+# Add a 'Brand' column to each dataset
+kfc_data['Brand'] = 'KFC'              # Add 'KFC' as brand
+mcd_data['Brand'] = 'McDonalds'        # Add 'McDonalds' as brand
+ccd_data['Brand'] = 'CafeCoffeeDay'    # Add 'CafeCoffeeDay' as brand
+
+# Merge datasets for analysis
+data = pd.concat([kfc_data, mcd_data, ccd_data])  # Combine all datasets
+
+# Display the first few rows of the combined dataset
+print(data.head())  # Print first few rows
+
+# Compute summary statistics for each brand
+summary_stats = data.groupby('Brand').describe()  # Group data by brand and calculate statistics
+print(summary_stats)  # Print summary statistics
+
+# Visualize revenue distribution for each brand
+plt.figure(figsize=(10, 6))  # Set plot size
+sns.histplot(data, x='Revenue', hue='Brand', kde=True)  # Plot revenue distribution
+plt.title('Revenue Distribution by Brand')  # Set plot title
+plt.xlabel('Revenue')  # Set x-axis label
+plt.ylabel('Density')  # Set y-axis label
+plt.legend(title='Brand')  # Add legend with brand title
+plt.show()  # Show plot
+
+# Compare customer satisfaction ratings across brands
+plt.figure(figsize=(10, 6))  # Set plot size
+sns.boxplot(x='Brand', y='CustomerSatisfaction', data=data)  # Plot boxplot
+plt.title('Customer Satisfaction Comparison')  # Set plot title
+plt.xlabel('Brand')  # Set x-axis label
+plt.ylabel('Customer Satisfaction')  # Set y-axis label
+plt.show()  # Show plot
+
+# Analyze market share by number of locations
+market_share = data.groupby('Brand')['Locations'].sum()  # Calculate total locations for each brand
+plt.figure(figsize=(8, 8))  # Set plot size
+market_share.plot(kind='pie', autopct='%1.1f%%', startangle=140, colors=sns.color_palette('pastel'))  # Plot pie chart
+plt.title('Market Share by Number of Locations')  # Set plot title
+plt.ylabel('')  # Remove y-axis label
+plt.show()  # Show plot
+
+# Additional Analysis (Optional): Analyze average revenue per location by brand
+data['RevenuePerLocation'] = data['Revenue'] / data['Locations']  # Calculate revenue per location
+plt.figure(figsize=(10, 6))  # Set plot size
+sns.barplot(x='Brand', y='RevenuePerLocation', data=data, ci=None)  # Plot bar chart
+plt.title('Average Revenue Per Location by Brand')  # Set plot title
+plt.xlabel('Brand')  # Set x-axis label
+plt.ylabel('Average Revenue Per Location')  # Set y-axis label
+plt.show()  # Show plot
+
+
+kfc_data.csv:
+Locations,Revenue,CustomerSatisfaction
+10,50000,4.5
+15,75000,4.2
+20,80000,4.7
+
+mcd_data.csv:
+Locations,Revenue,CustomerSatisfaction
+12,60000,4.4
+18,70000,4.6
+25,90000,4.8
+
+ccd_data.csv:
+Locations,Revenue,CustomerSatisfaction
+8,40000,4.3
+14,65000,4.5
+22,85000,4.2
+
+
+Based on this hypothetical data, here's the expected output of the provided code:
+   Locations  Revenue  Customer_Satisfaction    Brand
+0         10    50000                   4.5      KFC
+1         15    75000                   4.2      KFC
+2         20    80000                   4.7      KFC
+3         12    60000                   4.4  McDonalds
+4         18    70000                   4.6  McDonalds
+
+             Locations                                            Revenue  \
+                 count  mean       std   min   25%   50%   75%   max
+Brand                                                                     
+CafeCoffeeDay         3  14.0  7.071068   8.0  11.0  14.0  18.0  22.0
+KFC                   3  15.0  5.773503  10.0  12.5  15.0  17.5  20.0
+McDonalds             3  18.3  6.082763  12.0  15.0  18.0  21.5  25.0
+
+             Revenue                            CustomerSatisfaction           \
+               count          mean           std      min       25%  50%  75%   
+Brand                                                                           
+CafeCoffeeDay       3  63333.333333  22704.428366  40000.0  52500.00  65000.0   
+KFC                 3  68333.333333  15811.388301  50000.0  62500.00  75000.0   
+McDonalds           3  73333.333333  15811.388301  60000.0  65000.00  70000.0   
+
+                    
+             max  
+Brand               
+CafeCoffeeDay  4.5  
+KFC            4.7  
+McDonalds      4.8  
+
